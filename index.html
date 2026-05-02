@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Posy - The calm wedding planner you've been looking for">
+    <title>Posy - Wedding Vendor Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #FAF6EE;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #2D2A26;
+            line-height: 1.6;
+        }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(8px, -10px) rotate(3deg); }
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* NAV */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        nav .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            font-weight: 500;
+            color: #2D2A26;
+        }
+        
+        nav a {
+            font-size: 11px;
+            letter-spacing: 0.22em;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 999px;
+            background: #2D2A26;
+            color: #FAF6EE;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+        
+        /* HERO */
+        .hero {
+            padding: 40px 20px 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.75rem, 6vw, 4.75rem);
+            line-height: 1.02;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            margin-bottom: 28px;
+            animation: fadeUp 0.7s ease-out 0.15s both;
+        }
+        
+        .hero h1 em {
+            color: #C46B3C;
+            font-weight: 500;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #5A5347;
+            max-width: 500px;
+            margin-bottom: 36px;
+            animation: fadeUp 0.7s ease-out 0.25s both;
+        }
+        
+        .subtitle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            font-size: 10px;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: #7A6E5C;
+            animation: fadeUp 0.7s ease-out 0.05s both;
+        }
+        
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #C46B3C;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* EMAIL INPUT */
+        .email-form {
+            display: flex;
+            gap: 8px;
+            padding: 6px;
+            border-radius: 999px;
+            background: #FFFDF8;
+            box-shadow: 0 1px 0 rgba(45,42,38,0.04), 0 6px 24px -10px rgba(45,42,38,0.15);
+            max-width: 500px;
+            animation: fadeUp 0.7s ease-out 0.35s both;
+            margin-bottom: 12px;
+        }
+        
+        .email-form input {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #2D2A26;
+        }
+        
+        .email-form input::placeholder {
+            color: #A8A18F;
+        }
+        
+        .email-form button {
+            padding: 12px 20px;
+            border-radius: 999px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            background: #7A8B6A;
+            color: #FAF6EE;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .email-form button:hover {
+            background: #6A7A5A;
+        }
+        
+        .email-form button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .waitlist-text {
+            font-size: 12px;
+            color: #7A6E5C;
+            margin-left: 8px;
+            animation: fadeUp 0.7s ease-out 0.35s both;
+        }
+        
+        .waitlist-text strong {
+            color: #2D2A26;
+        }
+        
+        /* SUCCESS MESSAGE */
+        .success-message {
+            display: none;
+            padding: 20px;
+            border-radius: 16px;
+            background: #7A8B6A;
+            color: #FAF6EE;
+            max-width: 500px;
+            animation: fadeUp 0.7s ease-out;
+        }
+        
+        .success-message.show {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .success-message.show .email-form {
+            display: none;
+        }
+        
+        .success-check {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #FAF6EE;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        
+        .success-check svg {
+            width: 16px;
+            height: 16px;
+            color: #7A8B6A;
+            stroke-width: 3;
+        }
+        
+        .success-text h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .success-text p {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #E8E2D0;
+        }
+        
+        /* PHONE MOCKUP */
+        .phone-mockup {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeUp 0.7s ease-out 0.4s both;
+        }
+        
+        .phone-frame {
+            width: 260px;
+            height: 540px;
+            border-radius: 40px;
+            padding: 10px;
+            background: #1A1814;
+            box-shadow: 0 30px 80px -20px rgba(45,42,38,0.4);
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 32px;
+            background: #FAF6EE;
+            padding: 40px 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .phone-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 20px;
+            background: #1A1814;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .phone-content {
+            padding-top: 20px;
+        }
+        
+        .phone-content h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            text-align: center;
+            color: #2D2A26;
+            margin-bottom: 4px;
+        }
+        
+        .phone-content p {
+            font-size: 9px;
+            text-align: center;
+            color: #7A6E5C;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            margin-bottom: 12px;
+        }
+        
+        .payment-card {
+            background: linear-gradient(160deg, #C46B3C, #A85530);
+            border-radius: 16px;
+            padding: 16px;
+            color: #FAF6EE;
+            margin-bottom: 12px;
+        }
+        
+        .payment-card .label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: #FAE0CF;
+            margin-bottom: 4px;
+        }
+        
+        .payment-card .amount {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .payment-card .due {
+            font-size: 10px;
+            color: #FAE0CF;
+        }
+        
+        /* SECTIONS */
+        .section {
+            padding: 80px 20px;
+        }
+        
+        .section-bg-light {
+            background: #F4ECE0;
+        }
+        
+        .section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.1;
+            font-weight: 500;
+            margin-bottom: 40px;
+        }
+        
+        .section h2 em {
+            color: #C46B3C;
+        }
+        
+        .section-label {
+            font-size: 10px;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: #C46B3C;
+            margin-bottom: 16px;
+        }
+        
+        /* PROBLEM SECTION */
+        .problem-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto 48px;
+        }
+        
+        .problem-content p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #5A5347;
+        }
+        
+        .problem-content p em {
+            font-weight: 600;
+        }
+        
+        .problem-closing {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            color: #2D2A26;
+            font-style: italic;
+        }
+        
+        /* PRICING */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            max-width: 900px;
+            margin: 0 auto 40px;
+        }
+        
+        .pricing-card {
+            padding: 32px;
+            border-radius: 24px;
+            background: #FFFDF8;
+        }
+        
+        .pricing-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        
+        .pricing-card .price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            color: #2D2A26;
+        }
+        
+        .pricing-card .period {
+            font-size: 12px;
+            color: #7A6E5C;
+            margin-left: 4px;
+        }
+        
+        .pricing-card ul {
+            list-style: none;
+        }
+        
+        .pricing-card li {
+            font-size: 14px;
+            color: #5A5347;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pricing-card.pro {
+            background: #7A8B6A;
+            color: #FAF6EE;
+            position: relative;
+        }
+        
+        .pricing-card.pro::before {
+            content: 'Recommended';
+            position: absolute;
+            top: -12px;
+            left: 32px;
+            background: #C46B3C;
+            color: #FAF6EE;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            font-weight: 500;
+        }
+        
+        .pricing-card.pro h3,
+        .pricing-card.pro .price {
+            color: #FAF6EE;
+        }
+        
+        .pricing-card.pro li {
+            color: #FAF6EE;
+        }
+        
+        .pricing-card.pro .period {
+            color: #D4DBC8;
+        }
+        
+        /* FAQ */
+        .faq-item {
+            padding: 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            margin-bottom: 4px;
+        }
+        
+        .faq-item.open {
+            background: #FFFDF8;
+        }
+        
+        .faq-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .faq-header h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            color: #2D2A26;
+            flex: 1;
+        }
+        
+        .faq-header .toggle {
+            width: 16px;
+            height: 16px;
+            color: #7A6E5C;
+            flex-shrink: 0;
+            transition: transform 0.3s;
+        }
+        
+        .faq-item.open .toggle {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            display: none;
+            color: #5A5347;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+        
+        .faq-item.open .faq-answer {
+            display: block;
+        }
+        
+        /* CTA SECTION */
+        .cta-section {
+            background: #7A8B6A;
+            color: #FAF6EE;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .cta-section h2 {
+            color: #FAF6EE;
+            margin-bottom: 24px;
+        }
+        
+        .cta-section h2 em {
+            color: #FAE0CF;
+        }
+        
+        .cta-section p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #E8E2D0;
+            max-width: 600px;
+            margin: 0 auto 36px;
+        }
+        
+        /* FOOTER */
+        footer {
+            background: #2D2A26;
+            color: #A8A18F;
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+        }
+        
+        footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 24px;
+        }
+        
+        footer .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            nav { padding: 16px 20px; }
+            .hero-content { grid-template-columns: 1fr; }
+            .problem-content { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            footer .footer-content { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV -->
+    <nav>
+        <div class="logo">
+            <svg width="26" height="35" viewBox="0 0 60 80" style="display:inline-block">
+                <path d="M30 75 Q30 50, 30 20" stroke="#7A8B6A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                <ellipse cx="22" cy="35" rx="6" ry="3" fill="#7A8B6A" opacity="0.85" transform="rotate(-30 22 35)"/>
+                <ellipse cx="38" cy="40" rx="6" ry="3" fill="#7A8B6A" opacity="0.85" transform="rotate(30 38 40)"/>
+                <circle cx="30" cy="18" r="3.5" fill="#C46B3C" opacity="0.9"/>
+            </svg>
+            posy
+        </div>
+        <a href="#signup">Join waitlist</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div>
+                <div class="subtitle">
+                    <span class="pulse-dot"></span>
+                    Made in Newcastle · launching soon
+                </div>
+                <h1>The calm<br>wedding planner<br><em>you've been looking for.</em></h1>
+                <p>A beautiful, ad-free private space to keep every payment, contract, and vendor in one place — without an app trying to sell you flowers every five seconds.</p>
+                
+                <div class="success-message" id="successMessage">
+                    <div class="success-check">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="success-text">
+                        <h3>You're in. Welcome to Posy.</h3>
+                        <p>We'll email you the moment we launch — and the first 200 brides get Pro at the basic price.</p>
+                    </div>
+                </div>
+                
+                <div id="emailFormContainer">
+                    <form class="email-form" onsubmit="handleSignup(event)">
+                        <input type="email" id="emailInput" placeholder="your@email.com" required>
+                        <button type="submit">Save my spot</button>
+                    </form>
+                    <p class="waitlist-text">Join <strong id="waitlistCount">127</strong> Australian brides on the waitlist · No spam, ever.</p>
+                </div>
+            </div>
+
+            <div class="phone-mockup">
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="phone-content">
+                            <p>78 days to go</p>
+                            <h2><em>Sarah & James</em></h2>
+                            <div class="payment-card">
+                                <div class="label">Next payment</div>
+                                <div class="amount">Florist · A$1,200</div>
+                                <div class="due">Due in 5 days</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEM SECTION -->
+    <section class="section section-bg-light">
+        <div class="container">
+            <p class="section-label">The trap most brides fall into</p>
+            <h2>47 browser tabs. 3 spreadsheets.<br>6 vendor email threads. <em>Sound familiar?</em></h2>
+            
+            <div class="problem-content">
+                <div>
+                    <p>You've spent months curating your vendors. They're booked. The aesthetic is locked in. The Pinterest board is finally <em>complete</em>.</p>
+                    <p>But the <em>tracking</em> is chaos. Deposits in one folder. Contracts in your inbox. Balance due dates scattered across calendars.</p>
+                </div>
+                <div>
+                    <p>You download a free wedding app — and it bombards you with vendor ads, suggestions you didn't ask for, and tries to upsell you flowers you've already booked.</p>
+                    <p class="problem-closing">There has to be a calmer way.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT POSY IS -->
+    <section class="section">
+        <div class="container">
+            <h2 style="text-align:center;margin-bottom:56px">Posy is different. <em>On purpose.</em></h2>
+            
+            <div class="pricing-grid" style="max-width:1000px">
+                <div style="padding:32px;border-radius:24px;background:#7A8B6A;color:#FAF6EE">
+                    <p class="section-label" style="color:#D4DBC8;margin-bottom:16px">Posy is</p>
+                    <ul style="color:#FAF6EE">
+                        <li>✓ A calm, beautiful tracker</li>
+                        <li>✓ Ad-free, forever</li>
+                        <li>✓ Made for the bride who already knows her vendors</li>
+                        <li>✓ A private space — just you and your partner</li>
+                        <li>✓ Designed for boho, intimate, aesthetic weddings</li>
+                    </ul>
+                </div>
+                <div style="padding:32px;border-radius:24px;background:#FFFDF8">
+                    <p class="section-label" style="margin-bottom:16px">Posy is not</p>
+                    <ul style="color:#5A5347">
+                        <li>— A vendor marketplace</li>
+                        <li>— A free app that sells your data</li>
+                        <li>— Trying to plan your whole wedding for you</li>
+                        <li>— Cluttered with features you'll never use</li>
+                        <li>— A US/UK app pretending to understand Aussie weddings</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING SECTION -->
+    <section class="section" style="background:#FAF6EE">
+        <div class="container">
+            <p class="section-label" style="text-align:center">Pricing</p>
+            <h2 style="text-align:center">One purchase. <em>That's it.</em></h2>
+            <p style="text-align:center;color:#7A6E5C;margin-bottom:48px;font-size:14px">No subscriptions. No surprise fees. Pay once and use until your wedding day.</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Basic<span class="price">A$29<span class="period">once</span></span></h3>
+                    <ul>
+                        <li>✓ Vendor tracker (up to 25 vendors)</li>
+                        <li>✓ Payment timeline + reminders</li>
+                        <li>✓ Document vault (5GB)</li>
+                        <li>✓ Shared with one partner</li>
+                        <li>✓ Day-of-wedding timeline</li>
+                    </ul>
+                </div>
+                <div class="pricing-card pro">
+                    <h3>Pro<span class="price">A$59<span class="period">once</span></span></h3>
+                    <ul>
+                        <li style="border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:8px;margin-bottom:8px">Everything in Basic — and:</li>
+                        <li>✓ Unlimited vendors</li>
+                        <li>✓ Budget tracker (with category breakdowns)</li>
+                        <li>✓ Guest list & RSVP manager</li>
+                        <li>✓ Document vault (50GB)</li>
+                        <li>✓ Multi-partner sharing (up to 5)</li>
+                        <li>✓ Priority support</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="background:#F4ECE0;border-radius:24px;padding:24px;text-align:center;max-width:600px;margin:40px auto">
+                <p class="section-label">Founding Bride Offer</p>
+                <p style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#2D2A26;font-style:italic"><strong>The first 200 brides on the waitlist get Posy Pro for A$29</strong> — that's A$30 off, plus early access before public launch.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" style="background:#FAF6EE">
+        <div class="container" style="max-width:800px">
+            <p class="section-label" style="text-align:center">Quick questions</p>
+            <h2 style="text-align:center"><em>Asked & answered</em></h2>
+            
+            <div id="faqContainer"></div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="cta-section" id="signup">
+        <div class="container">
+            <h2>Plan your wedding<br><em>the way it should feel.</em></h2>
+            <p>Save your spot. We'll email you the moment Posy launches with your founding bride discount waiting.</p>
+            
+            <form class="email-form" style="max-width:500px;margin:0 auto" onsubmit="handleSignup(event)">
+                <input type="email" placeholder="your@email.com" required style="color:#2D2A26">
+                <button type="submit" style="background:#2D2A26">Save my spot</button>
+            </form>
+            <p class="waitlist-text" style="text-align:center;color:#D4DBC8"><strong style="color:#FAF6EE" id="waitlistCount2">127</strong> brides already saved their spot</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="logo">
+                <svg width="20" height="27" viewBox="0 0 60 80">
+                    <path d="M30 75 Q30 50, 30 20" stroke="#A8A18F" stroke-width="1.2" fill="none"/>
+                    <circle cx="30" cy="18" r="3.5" fill="#C46B3C"/>
+                </svg>
+                posy
+            </div>
+            <span>© 2026 · Made with ❤ in Newcastle</span>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Data
+        const faqs = [
+            { q: 'When does Posy launch?', a: 'Aiming for Q3 2026 on iOS and Android. Waitlist members get early access about 4-6 weeks before public launch — and a 50% discount as a thank-you for backing us early.' },
+            { q: 'Do I need both Posy and Easy Weddings/Bridebook?', a: 'No. Posy is built for brides who\'ve already chosen their vendors and want a calm tracker — not another marketplace. Most users find they can ditch the free apps once they\'ve booked their team.' },
+            { q: 'Will it work for small intimate weddings?', a: 'Yes — Posy is designed exactly for this. Whether it\'s 30 guests in a backyard or 80 in a vineyard, the workflow is the same.' },
+            { q: 'Can my partner use it too?', a: 'Yes. Basic includes shared access for one partner. Pro extends this to 5 people — useful if your maid of honour or wedding planner needs to see what\'s happening.' },
+            { q: 'What happens to my data after the wedding?', a: 'It\'s yours, forever. Your vault stays accessible for 12 months free — perfect for thank-you notes, vendor reviews, or anniversary memories.' },
+            { q: 'Is this Australian-made?', a: 'Yes — built in Newcastle NSW, designed for Australian weddings. We understand the Hunter Valley, the South Coast, Margaret River, the Adelaide Hills.' }
+        ];
+
+        // Render FAQ
+        const faqContainer = document.getElementById('faqContainer');
+        faqs.forEach((faq, idx) => {
+            const item = document.createElement('div');
+            item.className = 'faq-item';
+            item.innerHTML = `
+                <div class="faq-header" onclick="this.parentElement.classList.toggle('open')">
+                    <h3>${faq.q}</h3>
+                    <svg class="toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+                <div class="faq-answer">${faq.a}</div>
+            `;
+            faqContainer.appendChild(item);
+        });
+
+        // Waitlist Counter
+        let waitlistCount = localStorage.getItem('posyWaitlist') ? parseInt(localStorage.getItem('posyWaitlist')) : 127;
+        document.getElementById('waitlistCount').textContent = waitlistCount.toLocaleString();
+        document.getElementById('waitlistCount2').textContent = waitlistCount.toLocaleString();
+
+        // Handle Signup
+        function handleSignup(e) {
+            e.preventDefault();
+            
+            const emailInput = e.target.querySelector('input[type="email"]');
+            if (!emailInput.value || !emailInput.value.includes('@')) return;
+            
+            // Increment counter
+            waitlistCount++;
+            localStorage.setItem('posyWaitlist', waitlistCount);
+            document.getElementById('waitlistCount').textContent = waitlistCount.toLocaleString();
+            document.getElementById('waitlistCount2').textContent = waitlistCount.toLocaleString();
+            
+            // Show success message
+            const container = e.target.parentElement;
+            const successMsg = container.querySelector('#successMessage');
+            if (successMsg) {
+                container.querySelector('#emailFormContainer').style.display = 'none';
+                successMsg.classList.add('show');
+            } else {
+                e.target.style.display = 'none';
+                const msg = document.createElement('div');
+                msg.className = 'success-message show';
+                msg.innerHTML = `
+                    <div class="success-check">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <div class="success-text">
+                        <h3>You're in. Welcome to Posy.</h3>
+                        <p>We'll email you the moment we launch — and the first 200 brides get Pro at the basic price.</p>
+                    </div>
+                `;
+                container.appendChild(msg);
+            }
+        }
+    </script>
+</body>
+</html>
