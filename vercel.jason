@@ -1,5 +1,7 @@
 {
   "buildCommand": "react-scripts build",
-  "outputDirectory": "build",
-  "devCommand": "react-scripts start"
+  "outputDirectory": "./build",
+  "env": {
+    "CI": "false"
+  }
 }
