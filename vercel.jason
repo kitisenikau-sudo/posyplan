@@ -1,7 +1,14 @@
 {
   "buildCommand": "react-scripts build",
-  "outputDirectory": "./build",
-  "env": {
-    "CI": "false"
-  }
+  "outputDirectory": "build",
+  "routes": [
+    {
+      "src": "^/static/(.*)$",
+      "dest": "/static/$1"
+    },
+    {
+      "src": ".*",
+      "dest": "/index.html"
+    }
+  ]
 }
